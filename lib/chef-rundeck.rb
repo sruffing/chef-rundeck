@@ -57,17 +57,18 @@ class ChefRundeck < Sinatra::Base
       # Certain features in Rundeck require the osFamily value to be set to 'unix' to work appropriately. - SRK
       #++
       os_family = node[:kernel][:os] =~ /windows/i ? 'windows' : 'unix'
+
       response << <<-EOH
-<node name="#{xml_escape(node[:fqdn])}"
+<node name="#{xml_escape(node[:hostname])}"
       type="Node"
-      description="#{xml_escape(node_name)}"
+      description="#{xml_escape(node[:hostname])}"
       osArch="#{xml_escape(node[:kernel][:machine])}"
       osFamily="#{xml_escape(os_family)}"
       osName="#{xml_escape(node[:platform])}"
       osVersion="#{xml_escape(node[:platform_version])}"
       tags="#{xml_escape([node.chef_environment, node[:tags].join(','), node.run_list.roles.join(',')].join(','))}"
-      username="#{xml_escape(ChefRundeck.username)}"
-      hostname="#{xml_escape(node[:fqdn])}"
+      username="bootstrap"
+      hostname="#{xml_escape(node[:ipaddress])}"
       editUrl="#{xml_escape(ChefRundeck.web_ui_url)}/nodes/#{xml_escape(node_name)}/edit"/>
 EOH
     end
